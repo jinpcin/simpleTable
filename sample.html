@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="fb:admins" content=""/>
+
+    <!-- Favicon -->
+    <!-- <link rel="icon" href="" type="image/x-icon">
+    <link rel="shortcut icon" href="" type="image/x-icon">
+    <link rel="apple-touch-icon" href=""> -->
+
+    <!-- social network metas -->
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="LIVENOW"/>
+    <meta property="og:url" content=""/>
+    <meta property="image" content=""/>
+    <meta property="og:image" content=""/>
+    <meta property="site_name" content="LIVENOW"/>
+    <meta property="description" content="LIVENOW"/>
+
+    <title>LIVENOW</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.10/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.10/css/skins/_all-skins.min.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body class="hold-transition skin-green">
+<div class="wrapper">
+
+<!-- Main Header -->
+<header class="main-header">
+
+    <!-- Logo -->
+    <a href="#" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini">LN</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg">LIVENOW</span>
+    </a>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top">
+    </nav>
+</header>
+
+<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+        <!-- Sidebar Menu -->
+        <!-- /.sidebar-menu -->
+
+    </section>
+    <!-- /.sidebar -->
+</aside>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+
+
+<div id="page_container">
+<div class="box">
+  <custom-search-bar @sm="searchMove" :ikeyword="keyword"></custom-search-bar>
+
+  <!-- /.box-header -->
+  <div class="box-body">
+    <router-view :items="items" @st="sorting"></router-view>
+  </div>
+
+  <!-- /.box-body -->
+  <div class="box-footer clearfix">
+    <custom-pagination :total-cnt="totalCnt" :total-page="totalPage" :current-page="currentPage" :rows-per-page="rowsPerPage" :page-num-length="pageNumLength" @pm="pageMove"></custom-pagination>
+  </div>
+</div>
+</div>
+
+
+  </section>
+  <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<div style="position:absolute;top:45%;left:50%;display:none" id="AjaxLoading"><span style="font-weight:bold;font-size:70px;"><i class="fa fa-spinner" aria-hidden="true"></i></span></div>
+
+<!-- Main Footer -->
+<footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">LN</div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; 2019 <a href="/">LIVENOW</a>.</strong> All rights reserved.
+</footer>
+
+</div>
+
+
+<script type="text/x-template" id="customPagination">
+<ul class="pagination pagination-sm no-margin pull-right">
+  <li v-if="prev_seg_page"><a href="#" @click.prevent="paging(prev_seg_page)">«</a></li>
+  <li v-for="page in pages" :class="{active: page.current}" >
+    <a href="#" v-if="page.current == false" @click.prevent="paging(page.num)">{{page.num}}</a>
+		<a href="#" v-if="page.current">{{page.num}}</a>
+  </li>
+  <li v-if="next_seg_page"><a href="#" @click.prevent="paging(next_seg_page)">»</a></li>
+</ul>
+</script>
+
+<script type="text/x-template" id="customSearchBar">
+<div class="box-header">
+<h3 class="box-title">샘플 테이블</h3>
+<div class="box-tools">
+  <div class="input-group input-group-sm" style="float:left;margin-right:5px;">
+    <select name="select" v-model="select" class="form-control">
+    <option value="1">제목</option>
+    </select>
+  </div>
+  <div class="input-group input-group-sm" style="width: 150px;">
+    <input type="text" name="keyword" v-model.trim="keyword" @keyup="search()" class="form-control pull-right" placeholder="Search" />
+    <div class="input-group-btn">
+      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+    </div>
+  </div>
+</div>
+</div>
+</script>
+
+<script type="text/x-template" id="customList">
+<table class="table table-bordered table-striped">
+  <tbody>
+  <tr>
+    <th><a @click.prevent="sorting($event, 'livenowId')" data-column="livenowId" href="#">#</a></th>
+    <th><a @click.prevent="sorting($event, 'livenowTitle')" data-column="livenowTitle" href="#">제목</a></th>
+    <th><a @click.prevent="sorting($event, 'livenowContents')" data-column="livenowContents" href="#">내용</a></th>
+    <th><a @click.prevent="sorting($event, 'livenowRegid')" data-column="livenowRegid" href="#">등록아이디</a></th>
+    <th><a @click.prevent="sorting($event, 'livenowRegdate')" data-column="livenowRegdate" href="#">등록일자</a></th>
+  </tr>
+  <tr v-if="dataList.length === 0">
+    <td colspan="5">등록된 정보가 없습니다.</td>
+  </tr>
+  <tr v-for="item in dataList" :id="item.livenowId">
+    <td>{{item.livenowId}}</td>
+    <td>{{item.livenowTitle}}</td>
+    <td>{{item.livenowContents}}</td>
+    <td>{{item.livenowRegid}}</td>
+    <td>{{item.livenowRegdate}}</td>
+  </tr>
+  </tbody>
+</table>
+</script>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.0/js/adminlte.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.6/vue-router.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+<script src="simpleTable.js"></script>
+
+</body>
+</html>
