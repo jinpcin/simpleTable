@@ -272,7 +272,7 @@ methods: {
 },
 router: router,
 watch: {
-  '$route' (to, from) {
+  '$route': function(to, from) {
     this.dataLoad();
   }
 }
