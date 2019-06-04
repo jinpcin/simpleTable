@@ -210,22 +210,25 @@ methods: {
   },
   dataLoad: function() {
       var self = this;
-      $.ajax({
-          url: '/testApi.es',
-          data: {
-              nPage: this.currentPage,
-              select: this.select,
-              keyWord: this.keyword,
-              sort: this.sort,
-          },
-          dataType: 'json',
-          success: function (res) {
+      var xhr = new XMLHttpRequest();
+      var data = {
+          nPage: this.currentPage,
+          select: this.select,
+          keyWord: this.keyword,
+          sort: this.sort,
+      };
+      var params = Object.keys(data).map(
+          function(k) { return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) }
+      ).join('&');
+      xhr.open('GET', '/testApi?' + params);
+      xhr.onreadystatechange = function() {
+          if (xhr.readyState>3 && xhr.status==200) {
+              var res = JSON.parse(xhr.responseText);
               self.items = res.list;
               self.totalCnt = res.totalCount;
-          }, error: function (err) {
-              console.log(err);
           }
-      });
+      };
+      xhr.send();
   },
   pageMove: function(p) {
       this.$router.push(this.url({page : p}));
@@ -234,19 +237,23 @@ methods: {
       this.$router.push(this.url(search));
   },
   sorted: function() { // 컬럼 정렬 상태 꾸미기
-      $("[data-column]").each(function() {
-          $(this).find('i.fa').remove();
-      });
+    var dataColumn = document.querySelectorAll('[data-column]'), len = dataColumn.length;
+    for (var i = 0; i < len; i++) {
+        var curStat = dataColumn[i].querySelector('i.fa');
+        if (curStat) {
+            curStat.parentNode.removeChild(curStat);
+        }
+    }
 
-      if (this.sort) {
-          var sortVal = this.sort.split(':');
-          var target = $("[data-column="+sortVal[0]+"]");
-          if (sortVal[1] === 'desc') {
-              target.append('<i class="fa fa-caret-down"></i>');
-          } else if (sortVal[1] === 'asc') {
-              target.append('<i class="fa fa-caret-up"></i>');
-          }
-      }
+    if (this.sort) {
+        var sortVal = this.sort.split(':');
+        var target = document.querySelector('[data-column='+sortVal[0]+']');
+        if (sortVal[1] === 'desc') {
+            target.innerHTML += '<i class="fa fa-caret-down"></i>';
+        } else if (sortVal[1] === 'asc') {
+            target.innerHTML += '<i class="fa fa-caret-up"></i>';
+        }
+    }
   },
   sorting: function(obj, sortKey) {
       if (!this.sortColumn[sortKey]) {
